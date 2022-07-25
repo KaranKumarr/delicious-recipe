@@ -10,27 +10,28 @@ function Veggie() {
   const [veggieRecipes, setVeggieRecipes] = useState([]);
 
   useEffect(() => {
-    getPopular();
-  }, []);
+    const getVeggies = async () => {
 
-  const getPopular = async () => {
+      const check = localStorage.getItem('veggie-recipes');
 
-    const check = localStorage.getItem('veggie-recipes');
+      if (check) {
+        setVeggieRecipes(JSON.parse(check));
+      } else {
+        const api = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9&tags=vegan`);
+        const data = await api.json();
+        localStorage.setItem("veggie-recipes", JSON.stringify(data.recipes));
+        setVeggieRecipes(data.recipes);
 
-    if (check) {
-      setVeggieRecipes(JSON.parse(check));
-    } else {
-      const api = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9&tags=vegan`);
-      const data = await api.json();
-      localStorage.setItem("veggie-recipes", JSON.stringify(data.recipes));
-      setVeggieRecipes(data.recipes);
+        console.log(veggieRecipes);
+      }
+    };
+    getVeggies();
+  }, [veggieRecipes]);
 
-      console.log(veggieRecipes);
-    }
-  };
+
 
   return (
-    
+
     <div>
       <Wrapper>
         <h3>Our Vegetarian Picks</h3>

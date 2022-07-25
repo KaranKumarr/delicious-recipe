@@ -9,24 +9,25 @@ export default function Popular() {
     const [popularRecipes, setPopularRecipes] = useState([]);
 
     useEffect(() => {
+        const getPopular = async () => {
+
+            const check = localStorage.getItem('popular-recipes');
+
+            if (check) {
+                setPopularRecipes(JSON.parse(check));
+            } else {
+                const api = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9`);
+                const data = await api.json();
+                localStorage.setItem("popular-recipes", JSON.stringify(data.recipes));
+                setPopularRecipes(data.recipes);
+
+                console.log(popularRecipes);
+            }
+        };
         getPopular();
-    }, []);
+    }, [popularRecipes]);
 
-    const getPopular = async () => {
 
-        const check = localStorage.getItem('popular-recipes');
-
-        if (check) {
-            setPopularRecipes(JSON.parse(check));
-        } else {
-            const api = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9`);
-            const data = await api.json();
-            localStorage.setItem("popular-recipes", JSON.stringify(data.recipes));
-            setPopularRecipes(data.recipes);
-
-            console.log(popularRecipes);
-        }
-    };
 
 
     return (
